@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.spamblocker.ui.MainViewModel
 import com.spamblocker.ui.screens.AddNumberScreen
 import com.spamblocker.ui.screens.HomeScreen
@@ -24,7 +23,7 @@ import com.spamblocker.ui.theme.SpamBlockerTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by lazy { MainViewModel(this) }
+    private val viewModel: MainViewModel by lazy { MainViewModel(application) }
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
