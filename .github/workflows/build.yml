@@ -44,21 +44,19 @@ jobs:
         with:
           packages: 'platforms;android-35 build-tools;35.0.0'
 
-      - name: 缓存 Gradle
+      - name: 设置 Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-home-cache-cleanup: true
-
-      - name: 授予 gradlew 执行权限
-        run: chmod +x gradlew
+          gradle-version: '8.9'
+          cache-disabled: false
 
       - name: 构建 Debug APK
         if: ${{ github.event.inputs.build_type == 'debug' || github.event.inputs.build_type == '' }}
-        run: ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --no-daemon --stacktrace
 
       - name: 构建 Release APK
         if: ${{ github.event.inputs.build_type == 'release' }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: gradle assembleRelease --no-daemon --stacktrace
 
       - name: 上传 Debug APK
         if: ${{ github.event.inputs.build_type == 'debug' || github.event.inputs.build_type == '' }}
@@ -94,5 +92,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: 设置 Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
       - name: 运行 Lint
-        run: ./gradlew lint
+        run: gradle lint --no-daemon
