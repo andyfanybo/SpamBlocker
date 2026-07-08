@@ -44,6 +44,9 @@ jobs:
         with:
           packages: 'platforms;android-35 build-tools;35.0.0'
 
+      - name: 接受 Android SDK 许可
+        run: yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+
       - name: 设置 Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
