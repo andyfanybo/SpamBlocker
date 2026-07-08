@@ -55,7 +55,39 @@ jobs:
 
       - name: 构建 Debug APK
         if: ${{ github.event.inputs.build_type == 'debug' || github.event.inputs.build_type == '' }}
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee build-output.log || true
+        shell: bash
+
+      - name: 打印编译错误
+        if: ${{ (github.event.inputs.build_type == 'debug' || github.event.inputs.build_type == '') && always() }}
+        run: |
+          if [ -f build-output.log ]; then
+            echo "=== 编译错误详情 ==="
+            grep -iE 'error:|Error |unresolved|cannot find|Type mismatch|expecting' build-output.log || echo "未找到明确错误信息"
+            echo "=== 最后 80 行 ==="
+            tail -80 build-output.log
+          fi
+        shell: bash
+
+      - name: 检查 APK 是否生成
+        if: ${{ (github.event.inputs.build_type == 'debug' || github.event.inputs.build_type == '') && always() }}
+        run: |
+          if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
+            echo "APK 构建成功"
+          else
+            echo "APK 构建失败，请查看上方编译错误"
+            exit 1
+          fi
+        shell: bash
+
+      - name: 上传构建日志
+        if: ${{ (github.event.inputs.build_type == 'debug' || github.event.inputs.build_type == '') && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-debug
+          path: build-output.log
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: 构建 Release APK
         if: ${{ github.event.inputs.build_type == 'release' }}
