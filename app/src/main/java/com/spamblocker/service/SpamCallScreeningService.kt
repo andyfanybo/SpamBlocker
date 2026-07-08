@@ -15,7 +15,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.spamblocker.MainActivity
-import com.spamblocker.R
 import com.spamblocker.data.AppDatabase
 import com.spamblocker.util.PhoneNumberUtils
 import kotlinx.coroutines.flow.first
